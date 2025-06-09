@@ -227,15 +227,16 @@ function createMarker(place, map, labelIndex) {
 
       $outerDiv.on("click", () => {
         map.setCenter(place.geometry.location);
-        const infowindow = new google.maps.InfoWindow({
-          content: "You are here",
-          position: place.geometry.location,
-          pixelOffset: new google.maps.Size(0, -32),
-        });
-        infowindow.open(map);
+
+        const originalIcon = marker.getIcon();
+const newIcon = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";        marker.setIcon(newIcon);
+
+        marker.setAnimation(google.maps.Animation.BOUNCE); 
+
         setTimeout(() => {
-          infowindow.close();
-        }, 2000);
+          marker.setAnimation(null);
+          marker.setIcon(originalIcon);
+        }, 1400);
       });
 
       $(".placeContainer").append($outerDiv);
