@@ -135,6 +135,7 @@ function initMap() {
 }
 
 let activeMarker = null;
+let activePin = null;
 let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 function createMarker(place, map, labelIndex) {
@@ -243,21 +244,35 @@ function createMarker(place, map, labelIndex) {
 
       $outerDiv.append($rowDiv);
 
+      let activeTimeout = null;
+      let originalIcon = null;
       $outerDiv.on("click", () => {
         map.setCenter(place.geometry.location);
-
-        // Duplicate the original icon and create new icon
-        const originalIcon = marker.getIcon();
-        const newIcon = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
         
+        // When one card is clicked during pin animation
+        if(activePin) {
+          clearTimeout(activeTimeout);
+          activePin.setAnimation(null);
+          activePin.setIcon(originalIcon);
+          // activePin = null;
+        }
+        
+        activePin = marker;
+
+        // Duplicate the original icon
+        originalIcon = marker.getIcon();
+        // Create new icon
+        const newIcon = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+
         // Set icon to new icon and apply animation
         marker.setIcon(newIcon);
         marker.setAnimation(google.maps.Animation.BOUNCE); 
 
         // Set timeout to reset icon back to original
-        setTimeout(() => {
+        activeTimeout = setTimeout(() => {
           marker.setAnimation(null);
           marker.setIcon(originalIcon);
+          activePin = null;
         }, 1400);
       });
 
