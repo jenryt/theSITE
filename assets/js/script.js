@@ -78,6 +78,7 @@ function initMap() {
 
           // Creates pins on map for each campground
           markerCards = [];
+          $(".placeContainer").empty();
           for (let i = 0; i < results.length; i++) {
             createMarker(results[i], map, i);
           }
