@@ -75,7 +75,7 @@ function initMap() {
           });
           markers = [];
 
-          // Creates a marker for each campground
+          // Creates pins on map for each campground
           for (let i = 0; i < results.length; i++) {
             createMarker(results[i], map, i);
           }
@@ -133,8 +133,10 @@ function initMap() {
 
 let activeMarker = null;
 let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let markerCards = [];
 
 function createMarker(place, map, labelIndex) {
+  // Creating label for each pin on map
   const markerIcon = markerPath + labels[labelIndex++ % labels.length] + ".png";
   let marker = new google.maps.Marker({
     map: map,
@@ -150,6 +152,7 @@ function createMarker(place, map, labelIndex) {
     fields: ["website", "formatted_phone_number", "rating"],
   };
 
+  // Building cards with image and info.
   service.getDetails(request, function (placeDetails, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       const photoUrl =
@@ -243,7 +246,16 @@ function createMarker(place, map, labelIndex) {
         }, 1400);
       });
 
-      $(".placeContainer").append($outerDiv);
+      markerCards.push({
+        label: labels[(labelIndex - 1) % labels.length],
+        element: $outerDiv
+      });
+
+      // Sort cards alphabetically by marker label and append
+      markerCards.sort((a,b) => a.label.localeCompare(b.label));
+      markerCards.forEach(({element}) => {
+        $(".placeContainer").append(element);
+      });
     }
   });
 
