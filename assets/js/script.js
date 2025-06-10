@@ -3,6 +3,7 @@ const markerPath =
   "https://developers.google.com/maps/documentation/javascript/images/marker_green";
 let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
 let historyEl = $("#history");
+let markerCards = [];
 
 $("#clearHistory").on("click", () => {
   localStorage.clear();
@@ -76,6 +77,7 @@ function initMap() {
           markers = [];
 
           // Creates pins on map for each campground
+          markerCards = [];
           for (let i = 0; i < results.length; i++) {
             createMarker(results[i], map, i);
           }
@@ -133,7 +135,6 @@ function initMap() {
 
 let activeMarker = null;
 let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-let markerCards = [];
 
 function createMarker(place, map, labelIndex) {
   // Creating label for each pin on map
@@ -246,6 +247,7 @@ function createMarker(place, map, labelIndex) {
         }, 1400);
       });
 
+      // $(".placeContainer").append($outerDiv);
       markerCards.push({
         label: labels[(labelIndex - 1) % labels.length],
         element: $outerDiv
