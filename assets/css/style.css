@@ -159,13 +159,14 @@ header > img {
 
 .placeCard-body {
   height: 100%;
-  width: 70%;
+  width: 60%;
   padding: 3%;
+  overflow: scroll;
 }
 
 .imgContainer {
   height: 100%;
-  width: 30%;
+  width: 31%;
   overflow: hidden;
 }
 
@@ -215,6 +216,20 @@ header > img {
   font-weight: 400;
   font-size: 0.75rem;
   color: #9091ac;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #bcbdcd;
+  width: 9%;
+}
+
+.label {
+  font-family: "Fira Sans", sans-serif;
+  color: white;
+  margin: auto;
 }
 
 .fadeIn {

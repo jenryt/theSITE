@@ -172,14 +172,16 @@ function createMarker(place, map, labelIndex) {
 
       const $rowDiv = $("<div>").addClass("row g-0");
 
+      // Image for each card
       const $imgDiv = $("<div>").addClass("col-md-4 col-sm-4 imgContainer");
 
       const $img = $("<img>")
         .attr("src", photoUrl)
         .addClass("rounded-start locationImage");
 
+      // Contain for each card
       const $cardBodyDiv = $("<div>")
-        .addClass("col-md-8 col-sm-8")
+        .addClass("col-md-7 col-sm-7")
         .addClass("placeCard-body");
 
       const $locationName = $("<h5>")
@@ -212,6 +214,17 @@ function createMarker(place, map, labelIndex) {
         .addClass("card-text locationRating")
         .text(" User Rating: " + userRating + " / 5");
 
+      // Label for each card
+      const $labelDiv = $("<div>")
+        .addClass("col-md-1 col-sm-1")
+        .addClass("labelContainer");
+        
+      const $label = $("<p>")
+        .addClass("label")
+        .text(labels[(labelIndex - 1)]);
+
+      $imgDiv.append($img);
+
       $locationContact.prepend($phoneIcon);
 
       $websiteLink.append($externalLinkIcon);
@@ -224,11 +237,11 @@ function createMarker(place, map, labelIndex) {
         .append($locationContact)
         .append($locationRating);
 
-      $rowDiv.append($imgDiv).append($cardBodyDiv);
+      $labelDiv.append($label);
+
+      $rowDiv.append($imgDiv).append($cardBodyDiv).append($labelDiv);
 
       $outerDiv.append($rowDiv);
-
-      $imgDiv.append($img);
 
       $outerDiv.on("click", () => {
         map.setCenter(place.geometry.location);
