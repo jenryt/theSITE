@@ -148,6 +148,8 @@ function createMarker(place, map, labelIndex) {
     animation: google.maps.Animation.DROP,
   });
 
+  marker.originalIcon = markerIcon;
+
   // Making a request to Google Places for additional details
   let service = new google.maps.places.PlacesService(map);
   let request = {
@@ -245,7 +247,7 @@ function createMarker(place, map, labelIndex) {
       $outerDiv.append($rowDiv);
 
       let activeTimeout = null;
-      let originalIcon = null;
+      // let originalIcon = null;
       $outerDiv.on("click", () => {
         map.setCenter(place.geometry.location);
         
@@ -253,14 +255,12 @@ function createMarker(place, map, labelIndex) {
         if(activePin) {
           clearTimeout(activeTimeout);
           activePin.setAnimation(null);
-          activePin.setIcon(originalIcon);
+          activePin.setIcon(activePin.originalIcon);
           // activePin = null;
         }
         
         activePin = marker;
 
-        // Duplicate the original icon
-        originalIcon = marker.getIcon();
         // Create new icon
         const newIcon = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
 
@@ -271,7 +271,7 @@ function createMarker(place, map, labelIndex) {
         // Set timeout to reset icon back to original
         activeTimeout = setTimeout(() => {
           marker.setAnimation(null);
-          marker.setIcon(originalIcon);
+          marker.setIcon(marker.originalIcon);
           activePin = null;
         }, 1400);
       });
