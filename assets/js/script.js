@@ -3,6 +3,7 @@ const markerPath =
   "https://developers.google.com/maps/documentation/javascript/images/marker_green";
 let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
 let historyEl = $("#history");
+let markers = [];
 let markerCards = [];
 
 $("#clearHistory").on("click", () => {
@@ -12,7 +13,13 @@ $("#clearHistory").on("click", () => {
 
 // Backup to ensure it displays at most 15
 for (var i = 0; i < 15; i++) {
-  $("<div>").text(storedHistory[i]).appendTo(historyEl);
+  if (storedHistory[i]) {
+    $("<button>")
+      .attr("class", "histBtn")
+      .attr("value", storedHistory[i])
+      .text(storedHistory[i])
+      .appendTo(historyEl);
+  }
 }
 
 function initMap() {
@@ -25,10 +32,14 @@ function initMap() {
   });
 
   // This is creating the searchbox
-  let searchBox = new google.maps.places.SearchBox(
+  const searchBox = new google.maps.places.SearchBox(
     document.getElementById("locationSearch")
   );
 
+  searchBoxHandler(map, searchBox);
+}
+
+function searchBoxHandler(map, searchBox) {
   // Fires when an input is made or prediction is picked
   google.maps.event.addListener(searchBox, "places_changed", () => {
     const places = searchBox.getPlaces();
@@ -42,16 +53,7 @@ function initMap() {
     $(".placeholderText").addClass("d-none");
 
     let historyValue = places[0].formatted_address;
-    storedHistory.unshift(historyValue);
-
-    // Sets user input into local storage history after search
-    localStorage.setItem(
-      "historyValue",
-      // Limits to 15 values in search history
-      JSON.stringify(storedHistory.slice(0, 15))
-    );
-
-    $("<div>").text(historyValue).prependTo(historyEl);
+    addToHistList(historyValue);
 
     // Get the latitude and longitude of the entered location
     const location = places[0].geometry.location;
@@ -121,6 +123,7 @@ function initMap() {
             noResultModal.hide();
             return;
           });
+
           // or when users click on anywhere on the screen but outside of the modal, alert disappears.
           $(window).click(function (event) {
             if (!$(event.target).is(noResultModal)) {
@@ -132,6 +135,23 @@ function initMap() {
       }
     );
   });
+}
+
+function addToHistList(value) {
+  storedHistory.unshift(value);
+
+  // Sets user input into local storage history after search
+  localStorage.setItem(
+    "historyValue",
+    // Limits to 15 values in search history
+    JSON.stringify(storedHistory.slice(0, 15))
+  );
+
+  $("<button>")
+    .attr("class", "histBtn")
+    .attr("value", value)
+    .text(value)
+    .prependTo(historyEl);
 }
 
 let activeMarker = null;
@@ -170,6 +190,7 @@ function createMarker(place, map, labelIndex) {
         ? placeDetails.formatted_phone_number
         : "N/A";
       const userRating = placeDetails.rating ? placeDetails.rating : "--";
+
       // Creating the card that information will be added into
       const $outerDiv = $("<div>").addClass("fadeIn placeCard mb-2");
 
@@ -221,10 +242,10 @@ function createMarker(place, map, labelIndex) {
       const $labelDiv = $("<div>")
         .addClass("col-md-1 col-sm-1")
         .addClass("labelContainer");
-        
+
       const $label = $("<p>")
         .addClass("label")
-        .text(labels[(labelIndex - 1)]);
+        .text(labels[labelIndex - 1]);
 
       $imgDiv.append($img);
 
@@ -247,18 +268,16 @@ function createMarker(place, map, labelIndex) {
       $outerDiv.append($rowDiv);
 
       let activeTimeout = null;
-      // let originalIcon = null;
       $outerDiv.on("click", () => {
         map.setCenter(place.geometry.location);
-        
+
         // When one card is clicked during pin animation
-        if(activePin) {
+        if (activePin) {
           clearTimeout(activeTimeout);
           activePin.setAnimation(null);
           activePin.setIcon(activePin.originalIcon);
-          // activePin = null;
         }
-        
+
         activePin = marker;
 
         // Create new icon
@@ -266,7 +285,7 @@ function createMarker(place, map, labelIndex) {
 
         // Set icon to new icon and apply animation
         marker.setIcon(newIcon);
-        marker.setAnimation(google.maps.Animation.BOUNCE); 
+        marker.setAnimation(google.maps.Animation.BOUNCE);
 
         // Set timeout to reset icon back to original
         activeTimeout = setTimeout(() => {
@@ -276,15 +295,14 @@ function createMarker(place, map, labelIndex) {
         }, 1400);
       });
 
-      // $(".placeContainer").append($outerDiv);
       markerCards.push({
         label: labels[(labelIndex - 1) % labels.length],
-        element: $outerDiv
+        element: $outerDiv,
       });
 
       // Sort cards alphabetically by marker label and append
-      markerCards.sort((a,b) => a.label.localeCompare(b.label));
-      markerCards.forEach(({element}) => {
+      markerCards.sort((a, b) => a.label.localeCompare(b.label));
+      markerCards.forEach(({ element }) => {
         $(".placeContainer").append(element);
       });
     }
@@ -332,8 +350,6 @@ function createMarker(place, map, labelIndex) {
 
   markers.push(marker);
 }
-
-let markers = [];
 
 function clearResults() {
   const results = document.getElementById("cardList");

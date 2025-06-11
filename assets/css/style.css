@@ -84,6 +84,13 @@ header > img {
   overflow-y: auto;
 }
 
+#historyList {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
 .historyTitle {
   font-size: 27px;
 }
@@ -92,6 +99,13 @@ header > img {
   display: block;
   max-height: 56.5vh;
   overflow-y: auto;
+}
+
+.histBtn {
+  width: 100%;
+  border: none;
+  color: #4f4f4f;
+  background-color: transparent;
 }
 
 #clearHistory {
@@ -355,10 +369,6 @@ header > img {
     display: none;
   }
 
-  #historyList {
-    text-align: center;
-  }
-
   #history {
     display: block;
     max-height: 17vh;
@@ -385,10 +395,6 @@ header > img {
     margin-right: auto;
     margin-left: auto;
     margin-top: 3vh;
-  }
-
-  #historyList {
-    text-align: center;
   }
 }
 
