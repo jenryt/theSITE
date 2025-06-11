@@ -113,6 +113,13 @@ header > img {
   display: block;
 }
 
+.histBtn:hover {
+  background-color: #4f4f4f;
+  color: white;
+  opacity: 28%;
+  border-radius: 5px;
+}
+
 #clearHistory {
   background-color: var(--REIGreen);
   box-shadow: 0 4px 9px -4px var(--REIGreen);

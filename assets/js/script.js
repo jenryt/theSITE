@@ -37,11 +37,10 @@ function initMap() {
 
 $("#history").on("click", ".histBtn", (e) => {
   const locationName = e.currentTarget.value;
-  console.log(locationName);
-  btnSearch(map, locationName);
+  btnSearch(locationName);
 });
 
-function btnSearch(map, locationName) {
+function btnSearch(locationName) {
   const btnSearch = new google.maps.places.PlacesService(map);
 
   btnSearch.textSearch({ query: locationName }, (results, status) => {
@@ -50,10 +49,9 @@ function btnSearch(map, locationName) {
       results.length > 0
     ) {
       const place = results[0];
-      console.log(place);
-      processPlaceRequest(map, place);
+      processPlaceRequest(place);
     } else {
-      console.warn("No results or failed search:", status); ////
+      console.warn("No results or failed search:", status);
     }
   });
 }
@@ -72,23 +70,22 @@ function searchBoxHandler() {
       return;
     }
 
-    console.log(autoCompPlaces[0]); //type object
-    processPlaceRequest(map, autoCompPlaces[0]);
+    processPlaceRequest(autoCompPlaces[0]);
   });
 }
 
-function processPlaceRequest(map, place) {
+function processPlaceRequest(place) {
   // Hides the placeholder image and text
   $(".placeholderDesign").addClass("d-none");
   $(".placeholderText").addClass("d-none");
 
+  console.log(place);
+
   let placeName = place.formatted_address;
   addToHistList(placeName);
-  console.log(placeName);
 
   // Get the latitude and longitude of the entered location
   const location = place.geometry.location;
-  console.log(location); //type object
 
   // Search for campgrounds nearby the location
   const service = new google.maps.places.PlacesService(map);
@@ -114,7 +111,7 @@ function processPlaceRequest(map, place) {
         markerCards = [];
         $(".placeContainer").empty();
         for (let i = 0; i < results.length; i++) {
-          createMarker(results[i], map, i);
+          createMarker(results[i], i);
         }
 
         // Fits the map to the bounds of the markers
@@ -186,7 +183,7 @@ let activeMarker = null;
 let activePin = null;
 let labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-function createMarker(place, map, labelIndex) {
+function createMarker(place, labelIndex) {
   // Creating label for each pin on map
   const markerIcon = markerPath + labels[labelIndex++ % labels.length] + ".png";
   let marker = new google.maps.Marker({
