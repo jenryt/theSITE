@@ -5,6 +5,7 @@ let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
 let historyEl = $("#history");
 let markers = [];
 let markerCards = [];
+let map;
 
 $("#clearHistory").on("click", () => {
   localStorage.clear();
@@ -26,115 +27,142 @@ function initMap() {
   // Latitude and Longitude of United States
   const unitedstates = { lat: 37.0902, lng: -95.7129 };
   // The map, centered at United States
-  const map = new google.maps.Map(document.getElementById("map"), {
+  map = new google.maps.Map(document.getElementById("map"), {
     zoom: 4.2,
     center: unitedstates,
   });
 
+  searchBoxHandler();
+}
+
+$("#history").on("click", ".histBtn", (e) => {
+  const locationName = e.currentTarget.value;
+  console.log(locationName);
+  btnSearch(map, locationName);
+});
+
+function btnSearch(map, locationName) {
+  const btnSearch = new google.maps.places.PlacesService(map);
+
+  btnSearch.textSearch({ query: locationName }, (results, status) => {
+    if (
+      status === google.maps.places.PlacesServiceStatus.OK &&
+      results.length > 0
+    ) {
+      const place = results[0];
+      console.log(place);
+      processPlaceRequest(map, place);
+    } else {
+      console.warn("No results or failed search:", status); ////
+    }
+  });
+}
+
+function searchBoxHandler() {
   // This is creating the searchbox
   const searchBox = new google.maps.places.SearchBox(
     document.getElementById("locationSearch")
   );
 
-  searchBoxHandler(map, searchBox);
-}
-
-function searchBoxHandler(map, searchBox) {
   // Fires when an input is made or prediction is picked
   google.maps.event.addListener(searchBox, "places_changed", () => {
-    const places = searchBox.getPlaces();
+    const autoCompPlaces = searchBox.getPlaces();
 
-    if (places.length === 0) {
+    if (autoCompPlaces.length === 0) {
       return;
     }
 
-    // Hides the placeholder image and text
-    $(".placeholderDesign").addClass("d-none");
-    $(".placeholderText").addClass("d-none");
+    console.log(autoCompPlaces[0]); //type object
+    processPlaceRequest(map, autoCompPlaces[0]);
+  });
+}
 
-    let historyValue = places[0].formatted_address;
-    addToHistList(historyValue);
+function processPlaceRequest(map, place) {
+  // Hides the placeholder image and text
+  $(".placeholderDesign").addClass("d-none");
+  $(".placeholderText").addClass("d-none");
 
-    // Get the latitude and longitude of the entered location
-    const location = places[0].geometry.location;
+  let placeName = place.formatted_address;
+  addToHistList(placeName);
+  console.log(placeName);
 
-    // Search for campgrounds nearby the location
-    const service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(
-      {
-        location: location,
-        // Searches in a 50km radius
-        radius: 50000,
-        // Keyword gives more results than type
-        keyword: "campground",
-      },
+  // Get the latitude and longitude of the entered location
+  const location = place.geometry.location;
+  console.log(location); //type object
 
-      (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          clearResults(); // Clear any existing markers on the map on the lise TODO: fix the label rotation issue
-          // Clear any existing markers on the map
-          markers.forEach((marker) => {
-            marker.setMap(null);
-          });
-          markers = [];
+  // Search for campgrounds nearby the location
+  const service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(
+    {
+      location: location,
+      // Searches in a 50km radius
+      radius: 50000,
+      // Keyword gives more results than type
+      keyword: "campground",
+    },
 
-          // Creates pins on map for each campground
-          markerCards = [];
-          $(".placeContainer").empty();
-          for (let i = 0; i < results.length; i++) {
-            createMarker(results[i], map, i);
-          }
+    (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        clearResults(); // Clear any existing markers on the map on the lise TODO: fix the label rotation issue
+        // Clear any existing markers on the map
+        markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+        markers = [];
 
-          // Fits the map to the bounds of the markers
-          let bounds = new google.maps.LatLngBounds();
-          markers.forEach((marker) => {
-            bounds.extend(marker.getPosition());
-          });
-          map.fitBounds(bounds);
-        } else {
-          clearResults();
-          let bounds = new google.maps.LatLngBounds(location);
+        // Creates pins on map for each campground
+        markerCards = [];
+        $(".placeContainer").empty();
+        for (let i = 0; i < results.length; i++) {
+          createMarker(results[i], map, i);
+        }
 
-          markers.forEach((marker) => {
-            marker.setMap(null);
-          });
-          map.fitBounds(bounds);
-          map.setZoom(5); // set zoom level to 5
+        // Fits the map to the bounds of the markers
+        let bounds = new google.maps.LatLngBounds();
+        markers.forEach((marker) => {
+          bounds.extend(marker.getPosition());
+        });
+        map.fitBounds(bounds);
+      } else {
+        clearResults();
+        let bounds = new google.maps.LatLngBounds(location);
 
-          // when the result outcome is 0, create a modal to alert users.
-          let noResultModal = $("<div>").attr("class", "noResultModal");
-          let nrmContent = $("<div>").attr("class", "nrmContent");
-          let nrmClose = $("<button>").attr("class", "closeBtn").text("close");
-          let nrmImg = $("<img>").attr(
-            "src",
-            "assets/images/noCampingSign.png"
-          ); //a searching map or get lost img
-          let trailFailText =
-            "Trail fail! <br>There is no campground in the searched area.";
-          let nrmText = $("<p>").attr("class", "trailFail").html(trailFailText);
-          nrmContent.append(nrmImg, nrmText, nrmClose);
-          noResultModal.append(nrmContent);
-          $("#resultContainer").append(noResultModal);
+        markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+        map.fitBounds(bounds);
+        map.setZoom(5); // set zoom level to 5
 
-          noResultModal.show();
+        // when the result outcome is 0, create a modal to alert users.
+        let noResultModal = $("<div>").attr("class", "noResultModal");
+        let nrmContent = $("<div>").attr("class", "nrmContent");
+        let nrmClose = $("<button>").attr("class", "closeBtn").text("close");
+        let nrmImg = $("<img>").attr("src", "assets/images/noCampingSign.png"); //a searching map or get lost img
+        let trailFailText =
+          "Trail fail! <br>There is no campground in the searched area.";
+        let nrmText = $("<p>").attr("class", "trailFail").html(trailFailText);
+        nrmContent.append(nrmImg, nrmText, nrmClose);
+        noResultModal.append(nrmContent);
+        $("#resultContainer").append(noResultModal);
 
-          // when users click on "close", the modal disappear
-          nrmClose.click(function () {
+        noResultModal.show();
+
+        // when users click on "close", the modal disappear
+        nrmClose.click(function () {
+          noResultModal.hide();
+          return;
+        });
+
+        // or when users click on anywhere on the screen but outside of the modal, alert disappears.
+        $(window).click(function (event) {
+          if (!$(event.target).is(noResultModal)) {
             noResultModal.hide();
             return;
-          });
-
-          // or when users click on anywhere on the screen but outside of the modal, alert disappears.
-          $(window).click(function (event) {
-            if (!$(event.target).is(noResultModal)) {
-              noResultModal.hide();
-              return;
-            }
-          });
-        }
+          }
+        });
       }
-    );
-  });
+    }
+  );
 }
 
 function addToHistList(value) {

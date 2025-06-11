@@ -96,6 +96,7 @@ header > img {
 }
 
 #history {
+  width: 100%;
   display: block;
   max-height: 56.5vh;
   overflow-y: auto;
@@ -106,6 +107,10 @@ header > img {
   border: none;
   color: #4f4f4f;
   background-color: transparent;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: block;
 }
 
 #clearHistory {
