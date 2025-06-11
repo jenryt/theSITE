@@ -71,6 +71,8 @@ function searchBoxHandler() {
     }
 
     processPlaceRequest(autoCompPlaces[0]);
+
+    document.getElementById("locationSearch").value = "";
   });
 }
 
