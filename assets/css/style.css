@@ -12,6 +12,7 @@ header {
   position: relative;
   width: 100%;
   height: 40vh;
+  margin-bottom: 1rem;
 }
 
 .websiteTitle {
@@ -54,26 +55,35 @@ header > img {
   width: 100vw;
   height: 40vh;
   object-fit: cover;
-  margin-bottom: 5px;
+}
+
+.locationUtil {
+  display: flex;
+  align-items: center;
+}
+
+.localTimeBox {
+  display: flex;
+  justify-content: center;
 }
 
 .searchBar {
   width: 30vw;
   margin-right: auto;
-  margin-left: auto;
-  margin-top: 3vh;
-}
-
-.searchBarContainer {
-  width: 100%;
-  margin: 0px;
+  /* margin-left: auto; */
+  /* margin-top: 3vh; */
 }
 
 .searchBar ::placeholder {
   color: #aaabc3;
 }
 
-.form-control {
+.inputBox {
+  border-right: none;
+  border-color: #aaabc3;
+}
+
+.searchIcon {
   border-color: #aaabc3;
 }
 
@@ -155,6 +165,11 @@ header > img {
   width: 100%;
   height: 70vh;
 }
+
+/* .searchBarContainer {
+  width: 100%;
+  margin: 0px;
+} */
 
 .placeContainer {
   width: 100%;

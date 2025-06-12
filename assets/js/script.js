@@ -1,11 +1,17 @@
 // Initialize and add the map
 const markerPath =
   "https://developers.google.com/maps/documentation/javascript/images/marker_green";
+const weatherApiKey = "de401d76fda5e4e819dce14ddaee6ebd";
+const googleTimezonApiKey = "AIzaSyCuE1f9qfbYhI8lGN0UVhEmek-8vE9NRlY";
+
 let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
 let historyEl = $("#history");
 let markers = [];
 let markerCards = [];
 let map;
+
+// Forcast
+let isMetric = true; // temp unit in metric
 
 $("#clearHistory").on("click", () => {
   localStorage.clear();
@@ -88,6 +94,11 @@ function processPlaceRequest(place) {
 
   // Get the latitude and longitude of the entered location
   const location = place.geometry.location;
+  const local_lng = location.lng();
+  const local_lat = location.lat();
+  console.log(local_lng + " / " + local_lat);
+  getForecast(local_lat, local_lng, "imperial"); ////
+  localTime(local_lat, local_lng);
 
   // Search for campgrounds nearby the location
   const service = new google.maps.places.PlacesService(map);
@@ -376,6 +387,63 @@ function createMarker(place, labelIndex) {
   });
 
   markers.push(marker);
+}
+
+function localTime(lat, lng) {
+  $(".localTimeBox").empty();
+  const timestamp_now = Math.floor(Date.now() / 1000);
+  const url =
+    "https://maps.googleapis.com/maps/api/timezone/json?location=" +
+    lat +
+    "," +
+    lng +
+    "&timestamp=" +
+    timestamp_now +
+    "&key=" +
+    googleTimezonApiKey;
+
+  fetch(url).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        const localTime = new Date(timestamp_now * 1000);
+        const utcTime = new Intl.DateTimeFormat(undefined, {
+          timeZone: data.timeZoneId,
+          weekday: "short",
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        });
+
+        $("<div>")
+          .addClass("localTime d-inline fadeIn")
+          .text("Local Time | " + utcTime.format(localTime))
+          .appendTo($(".localTimeBox"));
+      });
+    }
+  });
+}
+
+function getForecast(lat, lng, unit) {
+  let url =
+    "https://api.openweathermap.org/data/2.5/forecast?lat=" +
+    lat +
+    "&lon=" +
+    lng +
+    "&appid=" +
+    weatherApiKey +
+    "&units=" +
+    unit;
+
+  fetch(url).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        let forecastDatas = data.list;
+        console.log("forecast data: ", forecastDatas);
+      });
+    }
+  });
 }
 
 function clearResults() {

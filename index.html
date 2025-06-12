@@ -46,25 +46,38 @@
         <div class="youCamp">you camp</div>
       </div>
     </header>
-    <div class="row justify-content-center searchBarContainer">
-      <div class="searchBar input-group rounded">
-        <input
-          id="locationSearch"
-          type="text"
-          class="form-control rounded"
-          placeholder="Search by location..."
-          aria-label="Search"
-          aria-describedby="search-addon"
-        />
-        <span class="input-group-text border-0" id="search-addon">
-          <i class="fas fa-search"></i>
-        </span>
+    <div class="container">
+      <div class="row justify-content-center locationUtil">
+        <div class="col-md-4 col-sm-12">
+          <div class="searchBar input-group">
+            <input
+              id="locationSearch"
+              type="text"
+              class="form-control inputBox"
+              placeholder="Search by location..."
+              aria-label="Search"
+              aria-describedby="search-addon"
+            />
+            <span class="input-group-text searchIcon" id="search-addon">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
+          <div class="localTimeBox"></div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+          <div class="row weatherContainer">
+            Local weather for the next five days...
+          </div>
+        </div>
+        <div class="col-md-1 col-sm-12">
+          <!-- <div class="localTime">Local Time:</div> -->
+        </div>
       </div>
     </div>
     <hr class="hr" />
     <div class="content">
       <div class="container">
-        <div class="row r-0" style="justify-content: center">
+        <div class="row" style="justify-content: center">
           <div class="col-md-3 col-sm-12 mb-3 historyList">
             <div id="historyList">
               <div class="historyTitle">Search History</div>
