@@ -97,8 +97,8 @@ function processPlaceRequest(place) {
   const local_lng = location.lng();
   const local_lat = location.lat();
   console.log(local_lng + " / " + local_lat);
-  getForecast(local_lat, local_lng, "imperial"); ////
-  localTime(local_lat, local_lng);
+  // getForecast(local_lat, local_lng, "imperial"); ////
+  locationTime(local_lat, local_lng);
 
   // Search for campgrounds nearby the location
   const service = new google.maps.places.PlacesService(map);
@@ -389,9 +389,11 @@ function createMarker(place, labelIndex) {
   markers.push(marker);
 }
 
-function localTime(lat, lng) {
-  $(".localTimeBox").empty();
-  const timestamp_now = Math.floor(Date.now() / 1000);
+function locationTime(lat, lng) {
+  $(".timeBox").empty();
+  const timestamp_now = Math.floor(Date.now() / 1000); // timestamp up to second
+  console.log(timestamp_now);
+
   const url =
     "https://maps.googleapis.com/maps/api/timezone/json?location=" +
     lat +
@@ -405,8 +407,11 @@ function localTime(lat, lng) {
   fetch(url).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        const localTime = new Date(timestamp_now * 1000);
-        const utcTime = new Intl.DateTimeFormat(undefined, {
+        const systemTime = new Date(timestamp_now * 1000);
+        console.log(systemTime);
+        console.log(data.timeZoneId);
+
+        const locationTimeFormatter = new Intl.DateTimeFormat(undefined, {
           timeZone: data.timeZoneId,
           weekday: "short",
           year: "numeric",
@@ -414,12 +419,14 @@ function localTime(lat, lng) {
           day: "numeric",
           hour: "numeric",
           minute: "2-digit",
+          timeZoneName: "short",
         });
 
+        $("<div>").text("Location Time |\u00A0").appendTo($(".timeBox"));
         $("<div>")
-          .addClass("localTime d-inline fadeIn")
-          .text("Local Time | " + utcTime.format(localTime))
-          .appendTo($(".localTimeBox"));
+          .addClass("locationTime d-inline fadeIn ")
+          .text(locationTimeFormatter.format(systemTime))
+          .appendTo($(".timeBox"));
       });
     }
   });
@@ -427,11 +434,11 @@ function localTime(lat, lng) {
 
 function getForecast(lat, lng, unit) {
   let url =
-    "https://api.openweathermap.org/data/2.5/forecast?lat=" +
+    "https://api.openweathermap.org/data/3.0/onecall?lat=" +
     lat +
     "&lon=" +
     lng +
-    "&appid=" +
+    "&exclude=current,minutely,hourly,alerts&appid=" +
     weatherApiKey +
     "&units=" +
     unit;
@@ -439,7 +446,7 @@ function getForecast(lat, lng, unit) {
   fetch(url).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        let forecastDatas = data.list;
+        let forecastDatas = data.daily;
         console.log("forecast data: ", forecastDatas);
       });
     }

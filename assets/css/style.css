@@ -62,16 +62,13 @@ header > img {
   align-items: center;
 }
 
-.localTimeBox {
+.timeBox {
   display: flex;
   justify-content: center;
 }
 
 .searchBar {
-  width: 30vw;
   margin-right: auto;
-  /* margin-left: auto; */
-  /* margin-top: 3vh; */
 }
 
 .searchBar ::placeholder {
@@ -165,11 +162,6 @@ header > img {
   width: 100%;
   height: 70vh;
 }
-
-/* .searchBarContainer {
-  width: 100%;
-  margin: 0px;
-} */
 
 .placeContainer {
   width: 100%;
