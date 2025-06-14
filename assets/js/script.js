@@ -97,7 +97,6 @@ function processPlaceRequest(place) {
   const local_lng = location.lng();
   const local_lat = location.lat();
   console.log(local_lng + " / " + local_lat);
-  // getForecast(local_lat, local_lng, "imperial"); ////
   locationTime(local_lat, local_lng);
 
   // Search for campgrounds nearby the location
@@ -391,7 +390,7 @@ function createMarker(place, labelIndex) {
 
 function locationTime(lat, lng) {
   $(".timeBox").empty();
-  const timestamp_now = Math.floor(Date.now() / 1000); // timestamp up to second
+  const timestamp_now = Math.floor(Date.now() / 1000); // UTC timestamp up to second
   console.log(timestamp_now);
 
   const url =
@@ -410,6 +409,7 @@ function locationTime(lat, lng) {
         const systemTime = new Date(timestamp_now * 1000);
         console.log(systemTime);
         console.log(data.timeZoneId);
+        getForecast(lat, lng, "imperial", data.timeZoneId); ////
 
         const locationTimeFormatter = new Intl.DateTimeFormat(undefined, {
           timeZone: data.timeZoneId,
@@ -423,16 +423,26 @@ function locationTime(lat, lng) {
         });
 
         $("<div>").text("Location Time |\u00A0").appendTo($(".timeBox"));
-        $("<div>")
+        const $timeEl = $("<div>")
           .addClass("locationTime d-inline fadeIn ")
-          .text(locationTimeFormatter.format(systemTime))
           .appendTo($(".timeBox"));
+
+        function updateLocationTime() {
+          const locationNow = new Date();
+          $timeEl.text(locationTimeFormatter.format(locationNow));
+        }
+
+        updateLocationTime();
+        setInterval(updateLocationTime(), 1000 * 60);
       });
     }
   });
 }
 
-function getForecast(lat, lng, unit) {
+function getForecast(lat, lng, unit, timeZone) {
+  let showYear = false;
+  $(".weatherContainer").empty();
+
   let url =
     "https://api.openweathermap.org/data/3.0/onecall?lat=" +
     lat +
@@ -446,8 +456,62 @@ function getForecast(lat, lng, unit) {
   fetch(url).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
+        const locationTimeFormatter = new Intl.DateTimeFormat(undefined, {
+          timeZone: timeZone,
+          weekday: "short",
+          month: "numeric",
+          day: "numeric",
+          ...(showYear && { year: "numeric" }),
+        });
+
         let forecastDatas = data.daily;
         console.log("forecast data: ", forecastDatas);
+
+        const $forecastBox = $("<div>")
+          .addClass("forecastBox ") //// row
+          .appendTo($(".weatherContainer"));
+
+        for (i = 0; i <= 4; i++) {
+          let date = new Date(forecastDatas[i].dt * 1000);
+          let iconId = forecastDatas[i].weather[0].id;
+          let tempHi = forecastDatas[i].temp.max;
+          let tempLo = forecastDatas[i].temp.min;
+          let precipitation = forecastDatas[i].pop;
+
+          const $dayBox = $("<div>")
+            .addClass("dayBox fadeIn ") //// col-md-2 col-sm-12
+            .appendTo($forecastBox);
+          const $date = $("<div>")
+            .addClass("date")
+            .text(locationTimeFormatter.format(date))
+            .appendTo($dayBox);
+          const $temp = $("<div>")
+            .addClass("temp")
+            .text(tempHi + " / " + tempLo + "°F")
+            .appendTo($dayBox);
+          // const $iconBox = $("<div>").addClass("iconBox").appendTo($dayBox);
+          const $icon = $("<i>")
+            .addClass("icon wi wi-owm-" + iconId)
+            .appendTo($dayBox);
+          const $precipitation = $("<div>")
+            .addClass("precipitation")
+            .text("Precip: " + precipitation + " %")
+            .appendTo($dayBox);
+
+          // console.log(
+          //   "Date:" +
+          //     date +
+          //     ", Icon: " +
+          //     iconId +
+          //     ", HI: " +
+          //     tempHi +
+          //     ", LO: " +
+          //     tempLo +
+          //     ", Precipitation: " +
+          //     precipitation
+          // );
+          console.log(locationTimeFormatter.format(new Date(date * 1000)));
+        }
       });
     }
   });

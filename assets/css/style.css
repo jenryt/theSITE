@@ -57,14 +57,37 @@ header > img {
   object-fit: cover;
 }
 
+/* Location Utilities */
 .locationUtil {
+  max-height: 15vh;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
 }
 
 .timeBox {
   display: flex;
   justify-content: center;
+}
+
+.dayBox {
+  color: #4f4f4f;
+  max-height: 15vh;
+  border: solid 1px #4f4f4f;
+  border-radius: 3px;
+  padding: 1%;
+}
+
+.forecastBox {
+  max-height: 15vh;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.icon {
+  display: block;
+  font-size: 21px;
 }
 
 .searchBar {
@@ -84,12 +107,12 @@ header > img {
   border-color: #aaabc3;
 }
 
-#results {
+/* #results {
   display: block;
   width: 500px;
   max-height: 56.5vh;
   overflow-y: auto;
-}
+} */
 
 #historyList {
   display: flex;
