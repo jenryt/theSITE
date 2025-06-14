@@ -20,12 +20,13 @@ header {
   width: 90%;
   height: 50%;
   bottom: 3vh;
-  left: 3vw;
-  font-family: "Delicious Handrawn", cursive, sans-serif;
+  left: 5vw;
+  font-family: fantasy, sans-serif;
   font-style: normal;
   font-weight: 400;
   color: #ffffff;
   background-color: transparent;
+  text-align: right;
 }
 
 .theSite {
@@ -38,7 +39,7 @@ header {
   left: 200px;
   bottom: 5%;
   font-size: 57px;
-  font-family: "Domine", sans-serif;
+  font-family: fantasy, sans-serif;
 }
 
 .youCamp {
@@ -67,7 +68,9 @@ header > img {
 
 .timeBox {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  margin-top: 1%;
 }
 
 .dayBox {
@@ -76,6 +79,8 @@ header > img {
   border: solid 1px #4f4f4f;
   border-radius: 3px;
   padding: 1%;
+  margin: 0.3%;
+  overflow: scroll;
 }
 
 .forecastBox {
@@ -86,7 +91,7 @@ header > img {
 }
 
 .icon {
-  display: block;
+  /* display: block; */
   font-size: 21px;
 }
 
@@ -411,10 +416,49 @@ header > img {
     display: none;
   }
 
+  header {
+    height: 30vh;
+  }
+
+  header > img {
+    height: 30vh;
+  }
+
   #history {
     display: block;
     max-height: 17vh;
     overflow-y: auto;
+  }
+
+  .locationUtil {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .timeBox {
+    padding: 1%;
+  }
+  .weatherContainer {
+    max-height: 6vh;
+    overflow: scroll;
+  }
+
+  .forecastBox {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+  }
+
+  .dayBox {
+    display: flex;
+    justify-content: space-evenly;
+    border: none;
+    border-radius: 0%;
+    padding: 0%;
+  }
+
+  .icon {
+    font-size: 17px;
   }
 }
 

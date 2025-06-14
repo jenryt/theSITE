@@ -440,8 +440,28 @@ function locationTime(lat, lng) {
 }
 
 function getForecast(lat, lng, unit, timeZone) {
+  // metric
+  let unit_f = true;
   let showYear = false;
   $(".weatherContainer").empty();
+
+  let hi_f = [],
+    lo_f = [],
+    hi_c = [],
+    lo_c = [];
+
+  const $unitSwitchBox = $("<div>")
+    .addClass("form-check form-switch")
+    .appendTo($(".weatherContainer"));
+  $("<i>").addClass("wi wi-celsius").appendTo($unitSwitchBox);
+  const $switch = $("<input>")
+    .addClass("form-check-input")
+    .attr("type", "checkbox")
+    .attr("role", "switch")
+    .attr("id", "flexSwitchCheckChecked")
+    .prop("checked", true)
+    .appendTo($unitSwitchBox);
+  $("<i>").addClass("wi wi-fahrenheit").appendTo($unitSwitchBox);
 
   let url =
     "https://api.openweathermap.org/data/3.0/onecall?lat=" +
@@ -468,50 +488,81 @@ function getForecast(lat, lng, unit, timeZone) {
         console.log("forecast data: ", forecastDatas);
 
         const $forecastBox = $("<div>")
-          .addClass("forecastBox ") //// row
+          .addClass("forecastBox")
           .appendTo($(".weatherContainer"));
 
         for (i = 0; i <= 4; i++) {
+          hi_f[i] = forecastDatas[i].temp.max.toFixed(0);
+          lo_f[i] = forecastDatas[i].temp.min.toFixed(0);
+          hi_c[i] = (((hi_f[i] - 32) * 5) / 9).toFixed(0);
+          lo_c[i] = (((lo_f[i] - 32) * 5) / 9).toFixed(0);
+
           let date = new Date(forecastDatas[i].dt * 1000);
+          let description = forecastDatas[i].weather[0].main;
           let iconId = forecastDatas[i].weather[0].id;
-          let tempHi = forecastDatas[i].temp.max;
-          let tempLo = forecastDatas[i].temp.min;
           let precipitation = forecastDatas[i].pop;
+          let tempHi, tempLo;
+          if (unit_f) {
+            tempHi = hi_f[i];
+            tempLo = lo_f[i];
+          } else {
+            tempHi = hi_c[i];
+            tempLo = lo_c[i];
+          }
+          // let tempHi = forecastDatas[i].temp.max;
+          // let tempLo = forecastDatas[i].temp.min;
 
           const $dayBox = $("<div>")
-            .addClass("dayBox fadeIn ") //// col-md-2 col-sm-12
+            .addClass("dayBox fadeIn ")
             .appendTo($forecastBox);
           const $date = $("<div>")
             .addClass("date")
             .text(locationTimeFormatter.format(date))
             .appendTo($dayBox);
           const $temp = $("<div>")
-            .addClass("temp")
+            .addClass("temp" + [i])
             .text(tempHi + " / " + tempLo + "°F")
             .appendTo($dayBox);
-          // const $iconBox = $("<div>").addClass("iconBox").appendTo($dayBox);
+          const $iconBox = $("<div>").addClass("iconBox").appendTo($dayBox);
           const $icon = $("<i>")
             .addClass("icon wi wi-owm-" + iconId)
-            .appendTo($dayBox);
+            .appendTo($iconBox);
+          const $description = $("<p>")
+            .addClass("d-inline")
+            .text("\u00A0\u00A0" + description)
+            .appendTo($iconBox);
           const $precipitation = $("<div>")
             .addClass("precipitation")
             .text("Precip: " + precipitation + " %")
             .appendTo($dayBox);
-
-          // console.log(
-          //   "Date:" +
-          //     date +
-          //     ", Icon: " +
-          //     iconId +
-          //     ", HI: " +
-          //     tempHi +
-          //     ", LO: " +
-          //     tempLo +
-          //     ", Precipitation: " +
-          //     precipitation
-          // );
           console.log(locationTimeFormatter.format(new Date(date * 1000)));
         }
+
+        $switch.on("click", () => {
+          let tempHi, tempLo;
+
+          if (unit_f) {
+            for (i = 0; i <= 4; i++) {
+              tempHi = hi_c[i];
+              tempLo = lo_c[i];
+              console.log(tempHi, tempLo);
+
+              $(".temp" + [i]).text(tempHi + " / " + tempLo + "°C");
+            }
+            unit_f = false;
+            $switch.prop("checked", false);
+          } else {
+            for (i = 0; i <= 4; i++) {
+              tempHi = hi_f[i];
+              tempLo = lo_f[i];
+              console.log(tempHi, tempLo);
+
+              $(".temp" + [i]).text(tempHi + " / " + tempLo + "°F");
+            }
+            unit_f = true;
+            $switch.prop("checked", true);
+          }
+        });
       });
     }
   });
