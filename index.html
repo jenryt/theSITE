@@ -66,9 +66,25 @@
           <div class="timeBox"></div>
         </div>
         <div class="col-md-8 col-sm-12">
-          <div class="weatherContainer">
-            Location weather for the next five days...
+          <div class="weatherUtils">
+            <p>Location weather for the next five days...</p>
+            <div class="unitSwitchBox">
+              <i class="wi wi-celsius"></i>
+              <div class="form-check form-switch unitSwitch">
+                <label>
+                  <input
+                    class="form-check-input switch"
+                    id="flexSwitchCheckChecked"
+                    role="switch"
+                    type="checkbox"
+                    checked
+                  />
+                </label>
+              </div>
+              <i class="wi wi-fahrenheit"></i>
+            </div>
           </div>
+          <div class="weatherContainer"></div>
         </div>
       </div>
     </div>
@@ -175,19 +191,37 @@
               </p>
               <p>
                 <a
-                  href="https://developers.google.com/maps"
+                  href="https://erikflowers.github.io/weather-icons/"
                   target="_blank"
                   class="text-reset"
-                  >Google Maps API
+                  >Weather Icons
                 </a>
               </p>
               <p>
                 <a
-                  href="https://developers.google.com/maps/documentation/places/web-service"
+                  href="https://openweathermap.org"
                   target="_blank"
                   class="text-reset"
-                  >Google Places API
+                  >OpenWeather
                 </a>
+              </p>
+              <p>
+                <select name="googleApis" id="googleApisGroup">
+                  <option value="" disable selected hidden>Google APIs</option>
+                  <option value="https://developers.google.com/maps">
+                    Google Maps API
+                  </option>
+                  <option
+                    value="https://developers.google.com/maps/documentation/places/web-service"
+                  >
+                    Google Places API
+                  </option>
+                  <option
+                    value="https://developers.google.com/maps/documentation/timezone/overview"
+                  >
+                    Google Time Zone API
+                  </option>
+                </select>
               </p>
             </div>
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">

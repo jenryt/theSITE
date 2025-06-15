@@ -6,6 +6,8 @@ const googleTimezonApiKey = "AIzaSyCuE1f9qfbYhI8lGN0UVhEmek-8vE9NRlY";
 
 let storedHistory = JSON.parse(localStorage.getItem("historyValue")) || [];
 let historyEl = $("#history");
+let switchEl = $(".switch");
+let googleApisGroup = document.getElementById("googleApisGroup");
 let markers = [];
 let markerCards = [];
 let map;
@@ -16,6 +18,14 @@ let isMetric = true; // temp unit in metric
 $("#clearHistory").on("click", () => {
   localStorage.clear();
   historyEl.empty();
+});
+
+// to open the selected Google APIs in the footer
+googleApisGroup.addEventListener("change", () => {
+  const url = googleApisGroup.value;
+  if (url) {
+    window.open(url, "_blank");
+  }
 });
 
 // Backup to ensure it displays at most 15
@@ -442,26 +452,16 @@ function locationTime(lat, lng) {
 function getForecast(lat, lng, unit, timeZone) {
   // metric
   let unit_f = true;
+
   let showYear = false;
-  $(".weatherContainer").empty();
+  $(".forecastBox").empty();
+  $(".unitSwitchBox").css("display", "inline-flex");
+  switchEl.prop("checked", true);
 
   let hi_f = [],
     lo_f = [],
     hi_c = [],
     lo_c = [];
-
-  const $unitSwitchBox = $("<div>")
-    .addClass("form-check form-switch")
-    .appendTo($(".weatherContainer"));
-  $("<i>").addClass("wi wi-celsius").appendTo($unitSwitchBox);
-  const $switch = $("<input>")
-    .addClass("form-check-input")
-    .attr("type", "checkbox")
-    .attr("role", "switch")
-    .attr("id", "flexSwitchCheckChecked")
-    .prop("checked", true)
-    .appendTo($unitSwitchBox);
-  $("<i>").addClass("wi wi-fahrenheit").appendTo($unitSwitchBox);
 
   let url =
     "https://api.openweathermap.org/data/3.0/onecall?lat=" +
@@ -538,7 +538,7 @@ function getForecast(lat, lng, unit, timeZone) {
           console.log(locationTimeFormatter.format(new Date(date * 1000)));
         }
 
-        $switch.on("click", () => {
+        switchEl.on("click", () => {
           let tempHi, tempLo;
 
           if (unit_f) {
@@ -550,7 +550,7 @@ function getForecast(lat, lng, unit, timeZone) {
               $(".temp" + [i]).text(tempHi + " / " + tempLo + "°C");
             }
             unit_f = false;
-            $switch.prop("checked", false);
+            switchEl.prop("checked", false);
           } else {
             for (i = 0; i <= 4; i++) {
               tempHi = hi_f[i];
@@ -560,7 +560,7 @@ function getForecast(lat, lng, unit, timeZone) {
               $(".temp" + [i]).text(tempHi + " / " + tempLo + "°F");
             }
             unit_f = true;
-            $switch.prop("checked", true);
+            switchEl.prop("checked", true);
           }
         });
       });

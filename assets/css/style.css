@@ -15,6 +15,7 @@ header {
   margin-bottom: 1rem;
 }
 
+/* Title styling */
 .websiteTitle {
   position: absolute;
   width: 90%;
@@ -34,14 +35,6 @@ header {
   font-size: 57px;
 }
 
-.semiCol {
-  position: absolute;
-  left: 200px;
-  bottom: 5%;
-  font-size: 57px;
-  font-family: fantasy, sans-serif;
-}
-
 .youCamp {
   position: relative;
   width: 50%;
@@ -58,12 +51,23 @@ header > img {
   object-fit: cover;
 }
 
+/* Footer Stylilng */
+#googleApisGroup {
+  color: #757575;
+  border: none;
+  background-color: transparent;
+  position: relative;
+  right: 3%;
+  width: 100%;
+}
+
 /* Location Utilities */
 .locationUtil {
-  max-height: 15vh;
+  max-height: 18vh;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
+  overflow: scroll !important;
 }
 
 .timeBox {
@@ -76,11 +80,11 @@ header > img {
 .dayBox {
   color: #4f4f4f;
   max-height: 15vh;
+  width: 20%;
   border: solid 1px #4f4f4f;
   border-radius: 3px;
   padding: 1%;
   margin: 0.3%;
-  overflow: scroll;
 }
 
 .forecastBox {
@@ -88,6 +92,33 @@ header > img {
   font-size: 12px;
   display: flex;
   justify-content: space-evenly;
+}
+
+.unitSwitchBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 15%;
+  display: none;
+}
+
+.weatherUtils {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weatherUtils > p {
+  margin: 0%;
+}
+
+.weatherContainer {
+  overflow: scroll;
+}
+
+.unitSwitch {
+  padding-top: 0.2em;
+  margin-bottom: 0px;
 }
 
 .icon {
@@ -111,13 +142,6 @@ header > img {
 .searchIcon {
   border-color: #aaabc3;
 }
-
-/* #results {
-  display: block;
-  width: 500px;
-  max-height: 56.5vh;
-  overflow-y: auto;
-} */
 
 #historyList {
   display: flex;
@@ -438,9 +462,17 @@ header > img {
   .timeBox {
     padding: 1%;
   }
+
+  .weatherUtils {
+    flex-wrap: wrap;
+  }
+
+  .unitSwitchBox {
+    width: 27%;
+  }
+
   .weatherContainer {
     max-height: 6vh;
-    overflow: scroll;
   }
 
   .forecastBox {
@@ -450,6 +482,7 @@ header > img {
   }
 
   .dayBox {
+    width: 100%;
     display: flex;
     justify-content: space-evenly;
     border: none;
