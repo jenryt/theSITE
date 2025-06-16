@@ -12,9 +12,6 @@ let markers = [];
 let markerCards = [];
 let map;
 
-// Forcast
-let isMetric = true; // temp unit in metric
-
 $("#clearHistory").on("click", () => {
   localStorage.clear();
   historyEl.empty();
@@ -117,9 +114,8 @@ function processPlaceRequest(place) {
       // Searches in a 50km radius
       radius: 50000,
       // Keyword gives more results than type
-      keyword: "campground",
+      keyword: "campground campsite camping",
     },
-
     (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         clearResults(); // Clear any existing markers on the map on the lise TODO: fix the label rotation issue
@@ -419,7 +415,7 @@ function locationTime(lat, lng) {
         const systemTime = new Date(timestamp_now * 1000);
         console.log(systemTime);
         console.log(data.timeZoneId);
-        getForecast(lat, lng, "imperial", data.timeZoneId); ////
+        getForecast(lat, lng, data.timeZoneId); ////
 
         const locationTimeFormatter = new Intl.DateTimeFormat(undefined, {
           timeZone: data.timeZoneId,
@@ -449,14 +445,23 @@ function locationTime(lat, lng) {
   });
 }
 
-function getForecast(lat, lng, unit, timeZone) {
-  // metric
-  let unit_f = true;
-
-  let showYear = false;
+function getForecast(lat, lng, timeZone) {
   $(".forecastBox").empty();
   $(".unitSwitchBox").css("display", "inline-flex");
-  switchEl.prop("checked", true);
+  // switchEl.prop("checked", true);
+
+  let showYear = false;
+  let unit = "imperial"; // calling API with imperial unit
+
+  const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+  console.log(locale);
+  let unit_f = locale.startsWith("en-US");
+
+  if (unit_f) {
+    switchEl.prop("checked", true);
+  } else {
+    switchEl.prop("checked", false);
+  }
 
   let hi_f = [],
     lo_f = [],
@@ -509,8 +514,6 @@ function getForecast(lat, lng, unit, timeZone) {
             tempHi = hi_c[i];
             tempLo = lo_c[i];
           }
-          // let tempHi = forecastDatas[i].temp.max;
-          // let tempLo = forecastDatas[i].temp.min;
 
           const $dayBox = $("<div>")
             .addClass("dayBox fadeIn ")
@@ -521,8 +524,15 @@ function getForecast(lat, lng, unit, timeZone) {
             .appendTo($dayBox);
           const $temp = $("<div>")
             .addClass("temp" + [i])
-            .text(tempHi + " / " + tempLo + "°F")
+            // .text(tempHi + " / " + tempLo + "°F")
             .appendTo($dayBox);
+
+          if (unit_f) {
+            $temp.text(tempHi + " / " + tempLo + "°F");
+          } else {
+            $temp.text(tempHi + " / " + tempLo + "°C");
+          }
+
           const $iconBox = $("<div>").addClass("iconBox").appendTo($dayBox);
           const $icon = $("<i>")
             .addClass("icon wi wi-owm-" + iconId)

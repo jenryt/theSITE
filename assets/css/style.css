@@ -102,6 +102,12 @@ header > img {
   display: none;
 }
 
+.unitSwitch {
+  padding-top: 0.2em;
+  padding-left: 2.67em;
+  margin-bottom: 0px;
+}
+
 .weatherUtils {
   display: flex;
   align-items: center;
@@ -114,11 +120,6 @@ header > img {
 
 .weatherContainer {
   overflow: scroll;
-}
-
-.unitSwitch {
-  padding-top: 0.2em;
-  margin-bottom: 0px;
 }
 
 .icon {
