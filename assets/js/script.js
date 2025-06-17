@@ -94,7 +94,7 @@ function processPlaceRequest(place) {
   $(".placeholderDesign").addClass("d-none");
   $(".placeholderText").addClass("d-none");
 
-  console.log(place);
+  // console.log(place); // test
 
   let placeName = place.formatted_address;
   addToHistList(placeName);
@@ -103,7 +103,7 @@ function processPlaceRequest(place) {
   const location = place.geometry.location;
   const local_lng = location.lng();
   const local_lat = location.lat();
-  console.log(local_lng + " / " + local_lat);
+  // console.log(local_lng + " / " + local_lat); // test
   locationTime(local_lat, local_lng);
 
   // Search for campgrounds nearby the location
@@ -113,8 +113,8 @@ function processPlaceRequest(place) {
       location: location,
       // Searches in a 50km radius
       radius: 50000,
-      // Keyword gives more results than type
       keyword: "campground campsite camping",
+      type: "campground",
     },
     (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -129,6 +129,7 @@ function processPlaceRequest(place) {
         markerCards = [];
         $(".placeContainer").empty();
         for (let i = 0; i < results.length; i++) {
+          // console.log(results[i]); // test
           createMarker(results[i], i);
         }
 
@@ -397,7 +398,7 @@ function createMarker(place, labelIndex) {
 function locationTime(lat, lng) {
   $(".timeBox").empty();
   const timestamp_now = Math.floor(Date.now() / 1000); // UTC timestamp up to second
-  console.log(timestamp_now);
+  // console.log(timestamp_now); // test
 
   const url =
     "https://maps.googleapis.com/maps/api/timezone/json?location=" +
@@ -413,9 +414,9 @@ function locationTime(lat, lng) {
     if (response.ok) {
       response.json().then(function (data) {
         const systemTime = new Date(timestamp_now * 1000);
-        console.log(systemTime);
-        console.log(data.timeZoneId);
-        getForecast(lat, lng, data.timeZoneId); ////
+        // console.log(systemTime); // test
+        // console.log(data.timeZoneId); // test
+        getForecast(lat, lng, data.timeZoneId);
 
         const locationTimeFormatter = new Intl.DateTimeFormat(undefined, {
           timeZone: data.timeZoneId,
@@ -454,7 +455,7 @@ function getForecast(lat, lng, timeZone) {
   let unit = "imperial"; // calling API with imperial unit
 
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-  console.log(locale);
+  // console.log(locale); // test
   let unit_f = locale.startsWith("en-US");
 
   if (unit_f) {
@@ -490,7 +491,7 @@ function getForecast(lat, lng, timeZone) {
         });
 
         let forecastDatas = data.daily;
-        console.log("forecast data: ", forecastDatas);
+        // console.log("forecast data: ", forecastDatas); // test
 
         const $forecastBox = $("<div>")
           .addClass("forecastBox")
@@ -545,7 +546,7 @@ function getForecast(lat, lng, timeZone) {
             .addClass("precipitation")
             .text("Precip: " + precipitation + " %")
             .appendTo($dayBox);
-          console.log(locationTimeFormatter.format(new Date(date * 1000)));
+          // console.log(locationTimeFormatter.format(new Date(date * 1000))); // test
         }
 
         switchEl.on("click", () => {
@@ -555,7 +556,7 @@ function getForecast(lat, lng, timeZone) {
             for (i = 0; i <= 4; i++) {
               tempHi = hi_c[i];
               tempLo = lo_c[i];
-              console.log(tempHi, tempLo);
+              // console.log(tempHi, tempLo); // test
 
               $(".temp" + [i]).text(tempHi + " / " + tempLo + "°C");
             }
@@ -565,7 +566,7 @@ function getForecast(lat, lng, timeZone) {
             for (i = 0; i <= 4; i++) {
               tempHi = hi_f[i];
               tempLo = lo_f[i];
-              console.log(tempHi, tempLo);
+              // console.log(tempHi, tempLo); // test
 
               $(".temp" + [i]).text(tempHi + " / " + tempLo + "°F");
             }
