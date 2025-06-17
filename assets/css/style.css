@@ -18,38 +18,32 @@ header {
 /* Title styling */
 .websiteTitle {
   position: absolute;
-  /* width: 90%;
-  height: 50%; */
-  /* bottom: 3vh;
-  left: 5vw; */
+  height: 60%;
+  width: 100%;
+  top: 30%;
+  padding: 0% 5%;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   font-style: normal;
   font-weight: 400;
   color: #ffffff;
   background-color: transparent;
-  text-align: right;
-
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-end;
-  top: 3vh;
 }
 
 .theSite {
-  position: relative;
   font-size: 57px;
+  line-height: 1;
 }
 
 .youCamp {
-  position: relative;
-  /* width: 50%;
-  left: 27%; */
-  bottom: 24%;
-  /* padding-bottom: 50px; */
   font-size: 40px;
+  padding-right: 15%;
+  line-height: 1;
 }
 
 header > img {
@@ -507,7 +501,6 @@ header > img {
 @media (min-width: 1500px) {
   .websiteTitle {
     height: 60%;
-    width: 50%;
   }
 }
 
